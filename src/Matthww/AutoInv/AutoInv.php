@@ -30,7 +30,7 @@ class AutoInv extends PluginBase implements Listener {
 
     /**
      * @param BlockBreakEvent $event
-     * @priority LOW
+     * @priority HIGHEST
      */
     public function onBlockBreak(BlockBreakEvent $event)
     {
