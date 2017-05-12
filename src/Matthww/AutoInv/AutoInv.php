@@ -5,7 +5,6 @@ namespace Matthww\AutoInv;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginBase;
-use pocketmine\item\Item;
 use pocketmine\Player;
 
 class AutoInv extends PluginBase implements Listener {
@@ -29,14 +28,16 @@ class AutoInv extends PluginBase implements Listener {
         $this->getLogger()->info("is disabled!");
     }
 
+    /**
+     * @param BlockBreakEvent $event
+     * @priority LOW
+     */
     public function onBlockBreak(BlockBreakEvent $event)
     {
         $player = $event->getPlayer();
 
         foreach($event->getDrops() as $drop)
         {
-            $itemId = $drop->getId();
-
             if($this->isInventoryFull($player) == true)
             {
                 $player->addTitle("§cYour inventory is full!", "");
@@ -45,7 +46,7 @@ class AutoInv extends PluginBase implements Listener {
                 {
                     if($event->isCancelled() == false)
                     {
-                        $player->getInventory()->addItem(Item::get($itemId));
+                        $player->getInventory()->addItem($drop);
                         $event->setDrops([]);
                     }
                 }
@@ -53,6 +54,10 @@ class AutoInv extends PluginBase implements Listener {
         }
     }
 
+    /**
+     * @param Player $player
+     * @return bool
+     */
     public function isInventoryFull(Player $player)
     {
         for($item = 0; $item < $player->getInventory()->getSize(); $item++)
