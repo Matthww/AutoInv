@@ -9,6 +9,8 @@ use pocketmine\Player;
 
 class AutoInv extends PluginBase implements Listener {
 
+    private $drop;
+
     public function onEnable()
     {
         $serverName = $this->getServer()->getName();
@@ -36,17 +38,17 @@ class AutoInv extends PluginBase implements Listener {
     {
         $player = $event->getPlayer();
 
-        foreach($event->getDrops() as $drop)
+        foreach($event->getDrops() as $this->drop)
         {
             if($this->isInventoryFull($player) == true)
             {
-                $player->addTitle("§cYour inventory is full!", "");
+                $player->addTitle("§cYour inventory is full!", " ", 5, 40, 5);
             } else {
                 if($player->getGamemode() == 0)
                 {
                     if($event->isCancelled() == false)
                     {
-                        $player->getInventory()->addItem($drop);
+                        $player->getInventory()->addItem($this->drop);
                         $event->setDrops([]);
                     }
                 }
@@ -60,12 +62,11 @@ class AutoInv extends PluginBase implements Listener {
      */
     public function isInventoryFull(Player $player)
     {
-        for($item = 0; $item < $player->getInventory()->getSize(); $item++)
+        $inventory = $player->getInventory();
+
+        if ($inventory->canAddItem($this->drop))
         {
-            if($player->getInventory()->getItem($item)->getId() === 0)
-            {
-                return false;
-            }
+            return false;
         }
         return true;
     }
